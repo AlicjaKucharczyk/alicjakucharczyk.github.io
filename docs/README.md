@@ -25,12 +25,12 @@ Embark on this thrilling journey to become a seasoned DBA/Detective. Solve the m
 
 ## 🗃️ Units
 
-| | Unit Link | What you will learn |
-| ----- | ----- | ----- |
-| 00 | [Getting Started with **Microsoft Fabric**](./00-getting-started/README.md?WT.mc_id=academic-114547-leestott) | Introduction to Fabric, Capacity, Workspace. |
-| 01 | [Create a Microsoft Fabric **Capacity**](./01-create-fabric-capacity/README.md?WT.mc_id=academic-114547-leestott) | How to create a capacity using Microsoft Azure. |
-| 02 | [Create a Microsoft Fabric **Workspace**](./02-create-fabric-workspace/README.md?WT.mc_id=academic-114547-leestott) | How to create a workspace using Microsoft Fabric. |
-| 03 | [Choose your own **Fabric Lab**](./03-labs-and-modules/README.md?WT.mc_id=academic-114547-leestott) | Different capabilities of Microsoft Fabric. |
-| 04 | [Microsoft Learn **Learning Paths**](./04-microsoft-learn-resources/README.md?WT.mc_id=academic-114547-leestott) | Fabric learning paths on Microsoft Learn. |
+| | Unit Link                                                                                                           | What you will learn                                                  |
+| ----- |---------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
+| 00 | [Limit the CPU utilization](./00-getting-started/README.md?WT.mc_id=academic-114547-leestott)                       | Utilizing basic Azure metrics to monitor and understand CPU usage, implementing pgBouncer for connection pooling to reduce CPU load. |
+| 01 | [Create a Microsoft Fabric **Capacity**](./01-create-fabric-capacity/README.md?WT.mc_id=academic-114547-leestott)   | How to create a capacity using Microsoft Azure.                      |
+| 02 | [Create a Microsoft Fabric **Workspace**](./02-create-fabric-workspace/README.md?WT.mc_id=academic-114547-leestott) | How to create a workspace using Microsoft Fabric.                    |
+| 03 | [Choose your own **Fabric Lab**](./03-labs-and-modules/README.md?WT.mc_id=academic-114547-leestott)                 | Different capabilities of Microsoft Fabric.                          |
+| 04 | [Microsoft Learn **Learning Paths**](./04-microsoft-learn-resources/README.md?WT.mc_id=academic-114547-leestott)    | Fabric learning paths on Microsoft Learn.                            |
 
 
