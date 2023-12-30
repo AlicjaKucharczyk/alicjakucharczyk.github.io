@@ -27,7 +27,7 @@ Embark on this thrilling journey to become a seasoned DBA/Detective. Solve the m
 
 | | Unit Link                                                                                                           | What you will learn                                                  |
 | ----- |---------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| 00 | [Limit the CPU utilization](./00-getting-started/README.md?WT.mc_id=academic-114547-leestott)                       | Utilizing basic Azure metrics to monitor and understand CPU usage, implementing pgBouncer for connection pooling to reduce CPU load. |
+| 00 | [Limit the CPU utilization](./CPU-utilization/README.md)                                                            | Utilizing basic Azure metrics to monitor and understand CPU usage, implementing pgBouncer for connection pooling to reduce CPU load. |
 | 01 | [Create a Microsoft Fabric **Capacity**](./01-create-fabric-capacity/README.md?WT.mc_id=academic-114547-leestott)   | How to create a capacity using Microsoft Azure.                      |
 | 02 | [Create a Microsoft Fabric **Workspace**](./02-create-fabric-workspace/README.md?WT.mc_id=academic-114547-leestott) | How to create a workspace using Microsoft Fabric.                    |
 | 03 | [Choose your own **Fabric Lab**](./03-labs-and-modules/README.md?WT.mc_id=academic-114547-leestott)                 | Different capabilities of Microsoft Fabric.                          |
