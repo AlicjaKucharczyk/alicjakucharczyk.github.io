@@ -25,11 +25,11 @@ Embark on this thrilling journey to become a seasoned DBA/Detective. Solve the m
 
 ## 🗃️ Units
 
-| | Unit Link                                                                                                        | What you will learn                                                  |
-| ----- |------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| 00 | [Limit the CPU utilization](CPU-utilization/README.md)                                                           | Utilizing basic Azure metrics to monitor and understand CPU usage, implementing pgBouncer for connection pooling to reduce CPU load. |
-| 01 | [Temporary files](./01-create-fabric-capacity/README.md?WT.mc_id=academic-114547-leestott)                       | How to create a capacity using Microsoft Azure.                      |
-| 02 | [Outdated statistics](./02-create-fabric-workspace/README.md?WT.mc_id=academic-114547-leestott)                  | How to create a workspace using Microsoft Fabric.                    |
-| 03 | [Bloated index](./03-labs-and-modules/README.md?WT.mc_id=academic-114547-leestott)                               | Different capabilities of Microsoft Fabric.                          |
+| | Unit Link                                                                                       | What you will learn                                                  |
+| ----- |-------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
+| 00 | [Limit the CPU utilization](CPU-utilization/README.md)                                          | Utilizing basic Azure metrics to monitor and understand CPU usage, implementing pgBouncer for connection pooling to reduce CPU load. |
+| 01 | [Temporary files](temporary-files/README.md)                                                    | How to create a capacity using Microsoft Azure.                      |
+| 02 | [Outdated statistics](./02-create-fabric-workspace/README.md?WT.mc_id=academic-114547-leestott) | How to create a workspace using Microsoft Fabric.                    |
+| 03 | [Bloated index](./03-labs-and-modules/README.md?WT.mc_id=academic-114547-leestott)              | Different capabilities of Microsoft Fabric.                          |
 
 
