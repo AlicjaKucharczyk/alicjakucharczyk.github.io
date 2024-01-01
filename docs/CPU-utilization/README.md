@@ -44,19 +44,19 @@ Given the Application Owner's observations and the metrics data, it seems likely
 
 ## Implementing the Solution: PgBouncer
 
-To resolve this issue, the documentation recommends using connection pooling, specifically through PgBouncer. PgBouncer effectively manages connection pooling, reducing the CPU load caused by a high number of connections. Detailed instructions on enabling and configuring PgBouncer for Azure Database for PostgreSQL - Flexible Server can be found here: ["Enabling and configuring pgBouncer"](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-pgbouncer#enabling-and-configuring-pgbouncer).
+To resolve this issue, the documentation recommends using connection pooling, specifically through PgBouncer. PgBouncer effectively manages connection pooling, reducing the CPU load caused by a high number of connections. Detailed instructions on enabling and configuring PgBouncer for Azure Database for PostgreSQL - Flexible Server can be found here: ["Enabling and configuring PgBouncer"](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-pgbouncer#enabling-and-configuring-pgbouncer).
 
-!> After enabling pgBouncer, no additional settings need to be changed. However, you should inform your Application Owner to switch the application's database connections to use port 6432 instead of the default 5432. This change directs the connections through pgBouncer.
+!> After enabling PgBouncer, no additional settings need to be changed. However, you should inform your Application Owner to switch the application's database connections to use port 6432 instead of the default 5432. This change directs the connections through PgBouncer.
 
 
 ## Monitoring the Changes
 
-Once pgBouncer is enabled and the application is reconfigured to connect through port 6432, allow some time for the changes to reflect in metrics. Then, revisit the Azure metrics. You should observe a notable decrease in CPU utilization and a more manageable number of connections. This exercise demonstrates the effectiveness of pgBouncer in optimizing connection management and reducing CPU strain in Azure Database for PostgreSQL.
+Once PgBouncer is enabled and the application is reconfigured to connect through port 6432, allow some time for the changes to reflect in metrics. Then, revisit the Azure metrics. You should observe a notable decrease in CPU utilization and a more manageable number of connections. This exercise demonstrates the effectiveness of PgBouncer in optimizing connection management and reducing CPU strain in Azure Database for PostgreSQL.
 
 
 
 
-?> <img src="../media/dba-dog.png" width="200"> **Application Owner:** "Thank you! After enabling pgBouncer, I see that the CPU utilization went down by around 16 percent!"
+?> <img src="../media/dba-dog.png" width="200"> **Application Owner:** "Thank you! After enabling PgBouncer, I see that the CPU utilization went down by around 16 percent!"
 
 
-![After redirecting connections through PgBouncer](../media/cpupgBouncer.png)
+![After redirecting connections through PgBouncer](../media/cpuPgBouncer.png)
