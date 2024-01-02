@@ -58,6 +58,74 @@ Once you have executed the query with the query ID:
 <img src="../media/confirm-query-id.png">
 
 
+# Solution: Optimizing Memory Allocation with `work_mem`
+
+The investigation has indicated that the performance slowdown is likely due to insufficient memory allocation for query operations, leading to an excessive reliance on disk-based temporary files. To address this, we need to adjust the `work_mem` parameter in PostgreSQL.
+
+## Understanding `work_mem` Configuration
+
+The `work_mem` parameter in PostgreSQL dictates the amount of memory to be used for internal sorting and hash operations before writing to temporary disk files. There are several levels at which this parameter can be adjusted:
+
+1. **Function/Procedure Level:** Modify a specific function or procedure using `ALTER FUNCTION` or `ALTER PROCEDURE`.
+2. **Database Level:** Apply changes to the entire database with `ALTER DATABASE`.
+3. **User or Role Level:** Alter settings for a specific user or role using `ALTER USER` or `ALTER ROLE`.
+4. **Session Level:** Adjust `work_mem` for the current session.
+5. **Global Level:** Change the parameter globally in the Server Parameters blade in the Azure portal.
+
+## Choosing the Right Approach
+
+Selecting the appropriate level for adjusting `work_mem` depends on several factors, including the amount of memory needed and the characteristics of the workload on your system. For the purpose of this exercise:
+
+- **Exercise Task:** Increase `work_mem` in the Server Parameters blade. This global change will affect the entire server and is a straightforward way to provide more memory for all operations.
+
+**Note:** While increasing `work_mem` can improve performance by reducing disk-based operations, it's important to balance this with the overall memory available to avoid overconsumption of resources.
+
+# Determining the Appropriate `work_mem` Value
+
+To optimize `work_mem` effectively, we need to understand the memory requirements of the specific query that's causing performance issues. In this case, it's the query executed by the `tempfiles()` function.
+
+## Steps to Examine the Function
+
+1. **Log into Your Database Instance:** Use the connection variables provided in the Connect blade of the Azure portal.
+
+2. **Switch to the Correct Database:** Ensure you are in the correct database for this exercise, which is named `main`.
+
+3. **View the Function's Content:** Run the command `\sf tempfiles` to display the body of the function. This will show you the exact query or queries being executed by the function.
+
+### Expected Query Output
+
+Upon executing `\sf tempfiles`, you should see the following query as the sole operation performed by the function:
+
+```sql
+PERFORM *
+FROM generate_series(1, 1000000)
+ORDER BY 1;
+```
+
+## Modifying and Executing the Query
+
+1. **Modify the Query:** Copy the original query from the `tempfiles()` function. Replace `PERFORM` with `SELECT`, as `PERFORM` is used within PL/pgSQL functions to execute a command without returning a result. The modified query should look like this:
+
+   ```sql
+   EXPLAIN ANALYZE SELECT * FROM generate_series(1, 1000000) ORDER BY 1;
+   ```
+   
+2. **Execute the Modified Query**: Paste and execute this modified query in your PostgreSQL terminal. This will not only execute the query but also provide a detailed query plan.
+3. **Expected Query Plan Output**: Upon executing the modified query, you should see an output similar to the following:
+   
+   ```sql
+       QUERY PLAN
+    ---------------------------------------------------------------------------------------------------------------------------------------
+     Sort  (cost=119425.35..121925.35 rows=1000000 width=4) (actual time=177.395..233.392 rows=1000000 loops=1)
+       Sort Key: generate_series
+       Sort Method: external merge  Disk: 11768kB
+       ->  Function Scan on generate_series  (cost=0.00..10000.00 rows=1000000 width=4) (actual time=52.937..115.908 rows=1000000 loops=1)
+     Planning Time: 0.035 ms
+     Execution Time: 257.681 ms
+    (6 rows)
+   ```
+    
+   This output reveals that the sort operation is using an external merge sort, which is spilling to disk (indicated by the Disk: 11768kB). This spill to disk is a key indicator that the `work_mem` setting may be too low for the query's requirements.
 
 
 ## Monitoring the Changes
