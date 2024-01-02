@@ -111,7 +111,8 @@ ORDER BY 1;
    ```
    
 2. **Execute the Modified Query**: Paste and execute this modified query in your PostgreSQL terminal. This will not only execute the query but also provide a detailed query plan.
-3. **Expected Query Plan Output**: Upon executing the modified query, you should see an output similar to the following:
+   
+   Upon executing the modified query, you should see an output similar to the following:
    
    ```sql
        QUERY PLAN
@@ -126,6 +127,59 @@ ORDER BY 1;
    ```
     
    This output reveals that the sort operation is using an external merge sort, which is spilling to disk (indicated by the Disk: 11768kB). This spill to disk is a key indicator that the `work_mem` setting may be too low for the query's requirements.
+3. Check the current setting of `work_mem`.
+
+   ```sql
+   SHOW work_mem;
+   ```
+
+   Expected output:
+   ```sql
+   work_mem
+   ----------
+   4MB
+   (1 row)
+   ```
+
+4. Given that the `EXPLAIN ANALYZE` output indicates a need for approximately 12MB (11768kB) to sort temporary files, and our current `work_mem` setting is 4MB, it's clear that adjustments are needed. Since in-memory sorting requires slightly more memory than disk-based sorting, we will experiment with different `work_mem` values to find the optimal setting.
+
+5. **Gradually Increase `work_mem`:** Start by incrementally increasing the `work_mem` setting in your session. Use the `SET` command to change the value:
+
+   ```sql
+   SET work_mem TO '20MB';
+   ```
+
+   Rerun the Query: After setting `work_mem` to 20MB, rerun the `EXPLAIN ANALYZE` query:
+
+   ```sql
+   EXPLAIN ANALYZE SELECT * FROM generate_series(1, 1000000) ORDER BY 1;
+   ```
+   
+   Check if the `Sort Method` in the query plan changes from `external merge Disk` to `quicksort Memory`.
+   Example Output
+   After setting work_mem to 20MB, you might still see external merge Disk as the sort method, indicating the value is too small. For example:
+
+   ```sql
+   Sort Method: external merge  Disk: 11752kB
+   ```    
+
+In this case, increase `work_mem` further:
+
+   ```sql
+   SET work_mem TO '25MB';
+   EXPLAIN ANALYZE SELECT * FROM generate_series(1, 1000000) ORDER BY 1;
+   ```
+
+   With work_mem set to 25MB, you should observe the sort method changing to in-memory quicksort:
+
+   ```sql
+    Sort Method: quicksort  Memory: 24577kB
+   ```
+
+   This indicates that 25MB is a sufficient value for work_mem to allow sorting in memory, as evidenced by the quicksort method and the memory usage close to 25MB. As you see we need around 13MB more space in memory as in the disk.
+
+
+   
 
 
 ## Monitoring the Changes
@@ -138,4 +192,5 @@ Once PgBouncer is enabled and the application is reconfigured to connect through
 ?> <img src="../media/dba-dog.png" width="200"> **Application Owner:** "Thank you! After enabling PgBouncer, I see that the CPU utilization went down by around 16 percent!"
 
 
-![After redirecting connections through PgBouncer](../media/cpuPgBouncer.png)
+![After redirecting connections through PgBouncer](../media/tempfiles-after-tuning.png)
+![After redirecting connections through PgBouncer](../media/tempfiles-after-optimization.png)
