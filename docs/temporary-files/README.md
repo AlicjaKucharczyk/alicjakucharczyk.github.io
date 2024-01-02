@@ -143,40 +143,49 @@ ORDER BY 1;
 
 4. Given that the `EXPLAIN ANALYZE` output indicates a need for approximately 12MB (11768kB) to sort temporary files, and our current `work_mem` setting is 4MB, it's clear that adjustments are needed. Since in-memory sorting requires slightly more memory than disk-based sorting, we will experiment with different `work_mem` values to find the optimal setting.
 
-5. **Gradually Increase `work_mem`:** Start by incrementally increasing the `work_mem` setting in your session. Use the `SET` command to change the value:
+5. **Gradually Increase `work_mem`:** Start by incrementally increasing the `work_mem` setting in your session. Use the `SET` command to change the value and rerun the query:
 
    ```sql
    SET work_mem TO '20MB';
-   ```
-
-   Rerun the Query: After setting `work_mem` to 20MB, rerun the `EXPLAIN ANALYZE` query:
-
-   ```sql
    EXPLAIN ANALYZE SELECT * FROM generate_series(1, 1000000) ORDER BY 1;
    ```
+
    
-   Check if the `Sort Method` in the query plan changes from `external merge Disk` to `quicksort Memory`.
-   Example Output
-   After setting work_mem to 20MB, you might still see external merge Disk as the sort method, indicating the value is too small. For example:
+6. Check if the `Sort Method` in the query plan changes from `external merge Disk` to `quicksort Memory`. After setting `work_mem` to 20MB, you might still see external merge Disk as the sort method, indicating the value is too small
+   Expected output:
 
    ```sql
    Sort Method: external merge  Disk: 11752kB
    ```    
 
-In this case, increase `work_mem` further:
+7. In this case, increase `work_mem` further:
 
    ```sql
    SET work_mem TO '25MB';
    EXPLAIN ANALYZE SELECT * FROM generate_series(1, 1000000) ORDER BY 1;
    ```
 
-   With work_mem set to 25MB, you should observe the sort method changing to in-memory quicksort:
+8. With work_mem set to 25MB, you should observe the sort method changing to in-memory quicksort:
 
    ```sql
     Sort Method: quicksort  Memory: 24577kB
    ```
 
-   This indicates that 25MB is a sufficient value for work_mem to allow sorting in memory, as evidenced by the quicksort method and the memory usage close to 25MB. As you see we need around 13MB more space in memory as in the disk.
+   This indicates that 25MB is a sufficient value for `work_mem` to allow sorting in memory, as evidenced by the quicksort method and the memory usage close to 25MB. As you see we need around 13MB more space in memory as in the disk.
+
+
+## Adjusting `work_mem` for the `tempfiles()` Function
+
+The `EXPLAIN ANALYZE` output and further analysis have led us to a `work_mem` value that should significantly improve the performance of our query within the `tempfiles()` function. However, since our query is encapsulated in a function that may have other memory requirements, next exercise is optional for determining the precise value needed. If you want to conclude the training at this point you may skip the optional exercise and set the correct value straight away:
+
+1. **Navigate to the Server Parameters Blade:**
+
+   In the Azure portal, locate and select the Server Parameters blade for your PostgreSQL server instance.
+
+2. **Search for `work_mem`**
+
+   Update the `work_mem` parameter to `47000kB`. This value has been identified as suitable for our needs.
+
 
 
    
@@ -184,12 +193,13 @@ In this case, increase `work_mem` further:
 
 ## Monitoring the Changes
 
-Once PgBouncer is enabled and the application is reconfigured to connect through port 6432, allow some time for the changes to reflect in metrics. Then, revisit the Azure metrics. You should observe a notable decrease in CPU utilization and a more manageable number of connections. This exercise demonstrates the effectiveness of PgBouncer in optimizing connection management and reducing CPU strain in Azure Database for PostgreSQL.
+Upon updating the `work_mem` setting to 47000kB, we anticipate that the generation of temporary files for our specific query will cease. To verify the effectiveness of this change, periodically check the Query Performance Insight within the Azure portal. Focus your attention on the 'Top Queries by Temporary Files' and 'Wait Statistics' tabs. These sections will reveal any significant alterations in temporary file creation and shifts in wait events that could affect query performance. Keep in mind that Query Performance Insight may exhibit a delay in reflecting these changes, typically taking anywhere from 15 to 30 minutes for the data to update. This delay should be accounted for when scheduling your review of the system's performance post-adjustment.
 
 
 
 
-?> <img src="../media/dba-dog.png" width="200"> **Application Owner:** "Thank you! After enabling PgBouncer, I see that the CPU utilization went down by around 16 percent!"
+
+?> <img src="../media/dba-dog.png" width="200"> **Application Owner:** "Thank you! After increasing `work_mem` value, the `tempfiles` function is being executed again 6000 times in 10 minutes."
 
 
 ![After redirecting connections through PgBouncer](../media/tempfiles-after-tuning.png)
